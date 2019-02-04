@@ -4,12 +4,11 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModelProvider
+import android.arch.persistence.room.Room
+import android.content.Context
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -19,11 +18,37 @@ import java.util.*
 class AppViewModel (application: Application) : AndroidViewModel(application) {
 
     var dataFetched: MutableLiveData<Boolean> = MutableLiveData()
-    val articles: MutableLiveData<ArticleResponse> = MutableLiveData()
+    val articleResponse: MutableLiveData<ArticleResponse> = MutableLiveData()
+    val articles: MutableLiveData<List<Article>> = MutableLiveData()
+
+
+    private lateinit var appDb: AppDB
+    private lateinit var newsDao: NewsDao
 
     init {
         dataFetched.value = false
-        articles.value = ArticleResponse("",0,null)
+        articleResponse.value = ArticleResponse("",0, emptyList())
+        articles.value = emptyList()
+    }
+
+    fun initAppDB(context: Context) {
+        appDb = AppDB.getAppDatabase(context)
+        newsDao = appDb.newsDao()
+    }
+
+    fun retrieveFromDb() {
+        GlobalScope.launch {
+            articles.postValue(newsDao.getAll())
+        }
+    }
+
+    fun updateDb(updates: List<Article>) {
+
+        GlobalScope.launch {
+            articles.postValue(updates)
+            updates.forEach { newsDao.insert(it) }
+        }
+
     }
 
     fun fetchNews() {
@@ -41,12 +66,10 @@ class AppViewModel (application: Application) : AndroidViewModel(application) {
 
         val newsService = retrofit.create(NewsApi::class.java)
 
-        val fetchedSponsors = newsService.getHeadlines("general","in")
+        val fetchedNews = newsService.getHeadlines("general","in")
         GlobalScope.launch {
             try {
-
-                articles.postValue(fetchedSponsors.await())
-                dataFetched.postValue(true)
+                articleResponse.postValue(fetchedNews.await())
             } catch (e: Exception) {
                 println(e)
             }
@@ -57,7 +80,7 @@ class AppViewModel (application: Application) : AndroidViewModel(application) {
         fun create(application: Application): AppViewModel {
             return ViewModelProvider.AndroidViewModelFactory
                 .getInstance(application).create(AppViewModel::class.java)
-                //.apply { initAppDB(application) }
+                .apply { initAppDB(application) }
         }
     }
 }

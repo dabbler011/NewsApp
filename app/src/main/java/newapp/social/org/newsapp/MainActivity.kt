@@ -3,6 +3,7 @@ package newapp.social.org.newsapp
 import android.arch.lifecycle.Observer
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import org.jetbrains.anko.toast
 
 class MainActivity : AppCompatActivity() {
@@ -14,14 +15,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         appViewModel = AppViewModel.create(application)
-
+        appViewModel.retrieveFromDb()
         appViewModel.fetchNews()
 
-        appViewModel.dataFetched.observe(this, Observer {
-            it?.let {
-                if (it) {
-                    toast("done "+ appViewModel.articles.value!!.status+" "+appViewModel.articles.value!!.totalResults)
+        appViewModel.articleResponse.observe(this, Observer {
+            it?.articles?.let {
+                if (!it.isEmpty()) {
+                    appViewModel.updateDb(it)
                 }
+            }
+        })
+
+        appViewModel.articles.observe(this, Observer {
+            it?.let {
+                it.forEach { if (it.author!=null) Log.d("akshat",it.title) }
             }
         })
     }
