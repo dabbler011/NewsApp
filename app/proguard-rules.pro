@@ -21,3 +21,8 @@
 #-renamesourcefileattribute SourceFile
 -keep class net.rehacktive.waspdb.** { *; }
 -keep class com.esotericsoftware.kryo.** { *; }
+*
+
+
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep class com.bumptech.glide.GeneratedAppGlideModuleImpl
