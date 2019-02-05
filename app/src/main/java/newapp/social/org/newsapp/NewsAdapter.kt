@@ -1,6 +1,8 @@
 package newapp.social.org.newsapp
 
 import android.content.Context
+import android.content.Intent
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,17 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.news_container.view.*
 
 class NewsAdapter(val context: Context): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+
+    companion object {
+        val ID = "id"
+        val CONTENT = "content"
+        val DESC = "description"
+        val IMAGE_URL = "image_url"
+        val TITLE = "title"
+        val SOURCE = "source"
+        val PUBLISHED_AT = "published_at"
+        val URL = "url"
+    }
 
     private var newsList: List<Article> = emptyList()
 
@@ -40,7 +53,19 @@ class NewsAdapter(val context: Context): RecyclerView.Adapter<NewsAdapter.NewsVi
                     .load(it)
                     .into(itemView.tv_news_image)
             }
-
+            itemView.setOnClickListener {
+                val intent = Intent(context,NewsDetailsActivity::class.java).apply {
+                    putExtra(ID,news.id)
+                    putExtra(CONTENT,news.content)
+                    putExtra(DESC,news.description)
+                    putExtra(IMAGE_URL,news.urlToImage)
+                    putExtra(TITLE,news.title)
+                    putExtra(SOURCE,news.source?.name)
+                    putExtra(PUBLISHED_AT,news.publishedAt)
+                    putExtra(URL,news.url)
+                }
+                context.startActivity(intent)
+            }
         }
     }
 
