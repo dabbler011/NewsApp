@@ -4,8 +4,9 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModelProvider
-import android.arch.persistence.room.Room
 import android.content.Context
+import android.location.Geocoder
+import android.util.Log
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.*
@@ -45,9 +46,11 @@ class AppViewModel (application: Application) : AndroidViewModel(application) {
 
         GlobalScope.launch {
             articles.postValue(updates)
+            Log.d("akshatsize", updates.size.toString())
+            val getAll = newsDao.getAll()
+            getAll.forEach { newsDao.delete(it) }
             updates.forEach { newsDao.insert(it) }
         }
-
     }
 
     fun fetchNews() {
@@ -72,6 +75,12 @@ class AppViewModel (application: Application) : AndroidViewModel(application) {
             } catch (e: Exception) {
                 println(e)
             }
+        }
+    }
+
+    fun fetchLocation() {
+        GlobalScope.launch {
+
         }
     }
 
