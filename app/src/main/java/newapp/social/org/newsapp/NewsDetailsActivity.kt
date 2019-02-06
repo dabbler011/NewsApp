@@ -11,7 +11,7 @@ class NewsDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_details)
-
+        setTitle("")
         setSupportActionBar(toolbar)
         getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
@@ -36,6 +36,7 @@ class NewsDetailsActivity : AppCompatActivity() {
         imageUrl?.let {
             GlideApp.with(context)
                 .load(it)
+                .placeholder(R.drawable.news_gradient)
                 .into(tv_news_image)
         }
         title?.let {

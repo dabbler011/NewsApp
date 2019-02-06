@@ -1,10 +1,8 @@
 package newapp.social.org.newsapp
 
-import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import java.sql.Timestamp
 
 @Entity(tableName = "articles")
 data class Article (
