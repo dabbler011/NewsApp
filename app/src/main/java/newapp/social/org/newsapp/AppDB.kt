@@ -20,10 +20,8 @@ abstract class AppDB : RoomDatabase() {
 
             if (INSTANCE == null) {
                 INSTANCE =
-                    Room.databaseBuilder(context.getApplicationContext(), AppDB::class.java!!, "db-news")
+                    Room.databaseBuilder(context.getApplicationContext(), AppDB::class.java, "db-news")
                         .allowMainThreadQueries().build()
-
-                //Room.inMemoryDatabaseBuilder(context.getApplicationContext(),AppDatabase.class).allowMainThreadQueries().build();
             }
             return INSTANCE as AppDB
         }

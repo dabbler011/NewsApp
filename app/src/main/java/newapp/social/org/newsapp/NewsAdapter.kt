@@ -6,9 +6,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import kotlinx.android.synthetic.main.news_container.view.*
 
-class NewsAdapter(val context: Context): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter(val context: Context): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>(), Filterable {
 
     companion object {
         val ID = "id"
@@ -22,9 +24,11 @@ class NewsAdapter(val context: Context): RecyclerView.Adapter<NewsAdapter.NewsVi
     }
 
     private var newsList: List<Article> = emptyList()
+    private var newsFilteredList: List<Article> = emptyList()
 
     fun updateList(articles: List<Article>) {
         newsList = articles
+        newsFilteredList = articles
         notifyDataSetChanged()
     }
 
@@ -33,10 +37,42 @@ class NewsAdapter(val context: Context): RecyclerView.Adapter<NewsAdapter.NewsVi
             LayoutInflater.from(p0.context)
             .inflate(R.layout.news_container, p0, false))
 
-    override fun getItemCount(): Int = newsList.size
+    override fun getItemCount(): Int = newsFilteredList.size
 
     override fun onBindViewHolder(p0: NewsAdapter.NewsViewHolder, p1: Int) {
-        p0.bindItem(context,newsList.get(p1))
+        p0.bindItem(context,newsFilteredList.get(p1))
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(charSequence: CharSequence): Filter.FilterResults {
+                val charString = charSequence.toString()
+                if (charString.isEmpty()) {
+                    newsFilteredList = newsList
+                } else {
+                    val filteredList = mutableListOf<Article>()
+                    for (row in newsList) {
+                        row.title?.let {
+
+                            if (it.toLowerCase().contains(charString.toLowerCase())) {
+                                filteredList.add(row)
+                            }
+                        }
+                    }
+
+                    newsFilteredList = filteredList
+                }
+
+                val filterResults = Filter.FilterResults()
+                filterResults.values = newsFilteredList
+                return filterResults
+            }
+
+            override fun publishResults(charSequence: CharSequence, filterResults: Filter.FilterResults) {
+                newsFilteredList = filterResults.values as List<Article>
+                notifyDataSetChanged()
+            }
+        }
     }
 
     class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){

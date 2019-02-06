@@ -6,6 +6,14 @@
             xmlns:tools="http://schemas.android.com/tools"
             tools:context=".MainActivity">
         <item
+            android:id="@+id/action_search"
+            android:icon="@drawable/ic_search"
+            android:orderInCategory="100"
+            android:title="Search"
+            app:showAsAction="always"
+            app:searchIcon="@drawable/ic_search"
+            app:actionViewClass="android.support.v7.widget.SearchView" />
+        <item
                 android:id="@+id/action_location"
                 android:orderInCategory="300"
                 android:title="Location"

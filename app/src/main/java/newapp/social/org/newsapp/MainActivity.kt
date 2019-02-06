@@ -1,17 +1,19 @@
 package newapp.social.org.newsapp
 
+import android.app.SearchManager
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +29,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appViewModel: AppViewModel
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var searchView: SearchView
+    private lateinit var adapter: NewsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         appViewModel = AppViewModel.create(application)
 
-        val adapter = NewsAdapter(this)
+        adapter = NewsAdapter(this)
 
         news_view.layoutManager = LinearLayoutManager(this)
         news_view.adapter = adapter
@@ -47,12 +51,24 @@ class MainActivity : AppCompatActivity() {
 
         appViewModel.retrieveFromDb()
         appViewModel.fetchLocation(this)
-       // appViewModel.fetchNews("in")
+
+        pullToRefresh.setOnRefreshListener {
+            appViewModel.fetchNews(this,sharedPreferences.getString(COUNTRY_CODE,"in"))
+            pullToRefresh.isRefreshing = false
+        }
 
         appViewModel.articleResponse.observe(this, Observer {
+
             it?.articles?.let {
                 if (!it.isEmpty()) {
-                    appViewModel.updateDb(it)
+                    var check = false
+                    if (!appViewModel.articles.value.isNullOrEmpty()) {
+                        if (it.get(0).title.equals(appViewModel.articles.value!!.get(0).title)
+                            and (it.get(0).title != null)) {
+                            check= true
+                        }
+                    }
+                    if (!check) appViewModel.updateDb(it)
                 }
             }
         })
@@ -72,14 +88,35 @@ class MainActivity : AppCompatActivity() {
                 if (!it.isEmpty()) {
                     if (progressBar.visibility == View.VISIBLE)
                         progressBar.visibility = View.GONE
+                    toast("feed updated")
                     adapter.updateList(it)
+
                 }
             }
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         getMenuInflater().inflate(R.menu.menu_main, menu)
+
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView.maxWidth = Integer.MAX_VALUE
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                adapter.getFilter().filter(query)
+                return false
+            }
+
+            override fun onQueryTextChange(query: String): Boolean {
+                adapter.getFilter().filter(query)
+                return false
+            }
+        })
+
         return true
     }
 
@@ -89,8 +126,18 @@ class MainActivity : AppCompatActivity() {
                 toast("Updating Location...")
                 appViewModel.fetchLocation(this)
                 return true
+            } else if (it.itemId == R.id.action_search) {
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true)
+            return
+        }
+        super.onBackPressed()
     }
 }
