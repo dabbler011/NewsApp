@@ -1,10 +1,13 @@
-package newapp.social.org.newsapp
+package newapp.social.org.newsapp.Activities
 
 import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_news_details.*
+import newapp.social.org.newsapp.GlideApp
+import newapp.social.org.newsapp.adapters.NewsAdapter
+import newapp.social.org.newsapp.R
 
 class NewsDetailsActivity : AppCompatActivity() {
 

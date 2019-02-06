@@ -1,4 +1,4 @@
-package newapp.social.org.newsapp
+package newapp.social.org.newsapp.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -9,6 +9,10 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import kotlinx.android.synthetic.main.news_container.view.*
+import newapp.social.org.newsapp.Activities.NewsDetailsActivity
+import newapp.social.org.newsapp.GlideApp
+import newapp.social.org.newsapp.R
+import newapp.social.org.newsapp.models.Article
 
 class NewsAdapter(val context: Context): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>(), Filterable {
 
@@ -32,14 +36,15 @@ class NewsAdapter(val context: Context): RecyclerView.Adapter<NewsAdapter.NewsVi
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): NewsAdapter.NewsViewHolder =
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): NewsViewHolder =
         NewsViewHolder(
             LayoutInflater.from(p0.context)
-            .inflate(R.layout.news_container, p0, false))
+                .inflate(R.layout.news_container, p0, false)
+        )
 
     override fun getItemCount(): Int = newsFilteredList.size
 
-    override fun onBindViewHolder(p0: NewsAdapter.NewsViewHolder, p1: Int) {
+    override fun onBindViewHolder(p0: NewsViewHolder, p1: Int) {
         p0.bindItem(context,newsFilteredList.get(p1))
     }
 
@@ -90,7 +95,7 @@ class NewsAdapter(val context: Context): RecyclerView.Adapter<NewsAdapter.NewsVi
                     .into(itemView.tv_news_image)
             }
             itemView.setOnClickListener {
-                val intent = Intent(context,NewsDetailsActivity::class.java).apply {
+                val intent = Intent(context, NewsDetailsActivity::class.java).apply {
                     putExtra(ID,news.id)
                     putExtra(CONTENT,news.content)
                     putExtra(DESC,news.description)

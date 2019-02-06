@@ -1,4 +1,4 @@
-package newapp.social.org.newsapp
+package newapp.social.org.newsapp.models
 
 import android.arch.persistence.room.ColumnInfo
 

@@ -1,4 +1,4 @@
-package newapp.social.org.newsapp
+package newapp.social.org.newsapp.utils
 
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer

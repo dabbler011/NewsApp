@@ -1,6 +1,7 @@
-package newapp.social.org.newsapp
+package newapp.social.org.newsapp.utils
 
 import android.arch.persistence.room.*
+import newapp.social.org.newsapp.models.Article
 
 @Dao
 interface NewsDao {

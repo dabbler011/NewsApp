@@ -1,4 +1,4 @@
-package newapp.social.org.newsapp
+package newapp.social.org.newsapp.Activities
 
 import android.app.SearchManager
 import android.arch.lifecycle.Observer
@@ -14,8 +14,9 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
 import android.support.v7.widget.DividerItemDecoration
-
-
+import newapp.social.org.newsapp.adapters.NewsAdapter
+import newapp.social.org.newsapp.R
+import newapp.social.org.newsapp.ViewModels.AppViewModel
 
 
 class MainActivity : AppCompatActivity() {

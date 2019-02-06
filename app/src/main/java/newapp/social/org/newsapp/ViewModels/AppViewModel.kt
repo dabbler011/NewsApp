@@ -1,4 +1,4 @@
-package newapp.social.org.newsapp
+package newapp.social.org.newsapp.ViewModels
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -8,6 +8,11 @@ import android.content.Context
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.*
+import newapp.social.org.newsapp.Activities.MainActivity
+import newapp.social.org.newsapp.models.Article
+import newapp.social.org.newsapp.models.ArticleResponse
+import newapp.social.org.newsapp.models.Location
+import newapp.social.org.newsapp.utils.*
 import org.jetbrains.anko.toast
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,10 +32,12 @@ class AppViewModel (application: Application) : AndroidViewModel(application) {
 
     init {
         dataFetched.value = false
-        articleResponse.value = ArticleResponse("",0, emptyList())
+        articleResponse.value = ArticleResponse("", 0, emptyList())
         articles.value = emptyList()
-        location.value = Location(sharedPreferences.getString(MainActivity.COUNTRY_NAME,"India"),
-            sharedPreferences.getString(MainActivity.COUNTRY_CODE,"in"))
+        location.value = Location(
+            sharedPreferences.getString(MainActivity.COUNTRY_NAME, "India"),
+            sharedPreferences.getString(MainActivity.COUNTRY_CODE, "in")
+        )
     }
 
     fun initAppDB(context: Context) {

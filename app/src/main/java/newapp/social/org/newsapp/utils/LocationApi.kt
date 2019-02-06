@@ -1,8 +1,8 @@
-package newapp.social.org.newsapp
+package newapp.social.org.newsapp.utils
 
 import kotlinx.coroutines.Deferred
+import newapp.social.org.newsapp.models.Location
 import retrofit2.http.GET
-import retrofit2.http.Headers
 
 
 interface LocationApi {
