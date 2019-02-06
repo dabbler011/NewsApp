@@ -13,6 +13,9 @@ import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
+import android.support.v7.widget.DividerItemDecoration
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -46,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         news_view.layoutManager = LinearLayoutManager(this)
         news_view.adapter = adapter
+        news_view.addItemDecoration(DividerItemDecoration(news_view.getContext(), DividerItemDecoration.VERTICAL))
 
         progressBar.visibility = View.VISIBLE
 

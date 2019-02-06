@@ -12,7 +12,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?colorPrimary"
-            app:titleTextColor="@android:color/background_light"
+            app:titleTextColor="@color/colorAccent"
             android:fitsSystemWindows="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

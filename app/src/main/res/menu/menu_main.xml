@@ -17,6 +17,6 @@
                 android:id="@+id/action_location"
                 android:orderInCategory="300"
                 android:title="Location"
-                android:icon="@drawable/location"
+                android:icon="@drawable/ic_location"
                 app:showAsAction="ifRoom" />
     </menu>
