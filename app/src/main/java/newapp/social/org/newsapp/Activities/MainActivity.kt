@@ -17,19 +17,11 @@ import android.support.v7.widget.DividerItemDecoration
 import newapp.social.org.newsapp.adapters.NewsAdapter
 import newapp.social.org.newsapp.R
 import newapp.social.org.newsapp.ViewModels.AppViewModel
+import newapp.social.org.newsapp.utils.NotificationUtils
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-
-
-    companion object {
-        @JvmStatic
-        val PREF = "SHARED_PREFERENCE"
-        @JvmStatic
-        val COUNTRY_CODE = "country_code"
-        @JvmStatic
-        val COUNTRY_NAME = "country_name"
-    }
 
     private lateinit var appViewModel: AppViewModel
     private lateinit var sharedPreferences: SharedPreferences
@@ -43,6 +35,12 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         sharedPreferences = getSharedPreferences(PREF, Context.MODE_PRIVATE)
+
+        val notifsCheck = sharedPreferences.getBoolean(NOTIFS,false)
+        if (!notifsCheck) {
+            NotificationUtils().setNotification(this@MainActivity)
+            sharedPreferences.edit().putBoolean(NOTIFS,true).apply()
+        }
 
         appViewModel = AppViewModel.create(application)
 
@@ -144,5 +142,16 @@ class MainActivity : AppCompatActivity() {
             return
         }
         super.onBackPressed()
+    }
+
+    companion object {
+        @JvmStatic
+        val PREF = "SHARED_PREFERENCE"
+        @JvmStatic
+        val COUNTRY_CODE = "country_code"
+        @JvmStatic
+        val COUNTRY_NAME = "country_name"
+        @JvmStatic
+        val NOTIFS = "notification"
     }
 }
